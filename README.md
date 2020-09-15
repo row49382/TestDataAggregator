@@ -1,11 +1,14 @@
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
-* [Config](#Config)
+* [Config](#config)
 * [Setup](#setup)
 
 ## General info
-This application aggregates properties from the TestCase, TestResult and WorkItems Azure Devops Analytics apis into a csv to maintain better testing traceability of your Azure DevOps project.
+This application aggregates properties from the TestCase, TestResult and WorkItems Azure Devops Analytics apis into a csv to maintain better testing traceability of your Azure DevOps project. More specifically it collects the following from each api:
+  * WorkItems: WorkItemId of the TestCase WorkItem, Linked Bug WorkItems to the TestCase (organized by State of bug: New, Active, Resolved, Closed)
+  * TestCase: TestName, TestOwner, Priority
+  * TestResult: CompletedDate, TestRunType, Outcome
 
 ## Technologies
 Project is created with .NET Core version: 3.1
