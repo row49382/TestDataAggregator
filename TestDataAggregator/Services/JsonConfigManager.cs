@@ -25,7 +25,6 @@ namespace TestInformationAggregator.Services
 		{
 			this.Configuration = JsonConvert.DeserializeObject<TestInfoAggregatorConfig>(
 				File.ReadAllText(Path.Combine(this.GetAssemblyPath(), configFileName)));
-
 		}
 
 		/// <summary>
