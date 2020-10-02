@@ -36,7 +36,7 @@ namespace TestInformationAggregator.Models
 			this.ODataQueries = oDataQueries;
 
 			this.OutputDirectory = string.IsNullOrEmpty(outputDirectory) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : outputDirectory;
-			this.FileReportType = string.IsNullOrEmpty(fileReportType) ? "CSV" : fileReportType;
+			this.FileReportType = string.IsNullOrEmpty(fileReportType) ? "csv" : fileReportType;
 		}
 
 		/// <summary>

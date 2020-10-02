@@ -52,8 +52,8 @@ namespace TestInformationAggregator
 				.Build();
 
 			FileWriter.Write(
-				string.IsNullOrEmpty(outputDir) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : outputDir,
-				$"{organization}{project}TestReport_{DateTime.Now:yyyy-dd-M--HH-mm-ss}.csv",
+				outputDir,
+				$"{organization}{project}TestReport_{DateTime.Now:yyyy-dd-M--HH-mm-ss}.{fileReportType.ToLower()}",
 				testInformationReport);
 		}
 	}
