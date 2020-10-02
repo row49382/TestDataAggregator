@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using TestInformationAggregator.Services;
 
 namespace TestInformationAggregator.Models
 {
@@ -7,6 +10,31 @@ namespace TestInformationAggregator.Models
 	/// </summary>
 	public class TestInfoAggregatorConfig
 	{
+		[JsonConstructor]
+		public TestInfoAggregatorConfig(
+			string organization, 
+			string project, 
+			string personalAccessToken,
+			string outputDirectory, 
+			Dictionary<string, bool> builderOptions,
+			Dictionary<string, string> oDataQueries,
+			string fileReportType)
+		{
+			string nullTemplate = "Value {0} from TestInfoAgreggatorConfig ctor cannot be null. Set the value in the Config.json file.";
+
+			Requires.NotNull(organization, string.Format(nullTemplate, "organization"));
+			Requires.NotNull(project, string.Format(nullTemplate, "project"));
+			Requires.NotNull(personalAccessToken, string.Format(nullTemplate, "personalAccessToken"));
+
+			this.Organization = organization;
+			this.Project = project;
+			this.PersonalAccessToken = personalAccessToken;
+			this.OutputDirectory = outputDirectory;
+			this.BuilderOptions = builderOptions;
+			this.ODataQueries = oDataQueries;
+			this.FileReportType = fileReportType;
+		}
+
 		/// <summary>
 		/// The Azure DevOps Organization
 		/// </summary>
@@ -41,5 +69,10 @@ namespace TestInformationAggregator.Models
 		/// The Odata queries that can be configured on the api calls
 		/// </summary>
 		public Dictionary<string, string> ODataQueries { get; set; }
+
+		/// <summary>
+		/// The file type of the report generated (currently only supports csv and html)
+		/// </summary>
+		public string FileReportType { get; set; }
 	}
 }
