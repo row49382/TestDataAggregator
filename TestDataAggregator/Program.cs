@@ -2,6 +2,7 @@
 using TestInformationAggregator.Models;
 using TestInformationAggregator.Services;
 using System;
+using System.Net.Http.Headers;
 
 namespace TestInformationAggregator
 {
@@ -18,6 +19,7 @@ namespace TestInformationAggregator
 			string organization = config.Configuration.Organization;
 			string project = config.Configuration.Project;
 			string outputDir = config.Configuration.OutputDirectory;
+			string fileReportType = config.Configuration.FileReportType;
 
 			string testInformationHeaders =
 				$"WorkItemID,Linked UserStoryIds,CompletedDate,TestSK,TestRunType,Outcome,TestName,TestOwner,Priority," +
@@ -34,7 +36,13 @@ namespace TestInformationAggregator
 			var testResults = azureDevopsAnalyticsClient.GetTestResults(config.Configuration.ODataQueries["TestResults"]);
 			var testCases = azureDevopsAnalyticsClient.GetTestCases(config.Configuration.ODataQueries["TestCases"]);
 
-			string testInformationReport = new TestInformationCSVBuilder(testInformationHeaders, new AzureAnalyticsResponseUtility(), config.Configuration.BuilderOptions)
+			TestInformationBuilderBase builder = TestInformationBuilderFactory.GetBuilder(
+				fileReportType, 
+				testInformationHeaders, 
+				new AzureAnalyticsResponseUtility(), 
+				config.Configuration.BuilderOptions);
+
+			string testInformationReport = builder
 				.JoinTestResultAndTestCases(testResults, testCases)
 				.FilterNotApplicableTestResults()
 				.SetRemainingTestInfoProperties(closedTestCasesWithLinks, workItemRevisions, workItems)
