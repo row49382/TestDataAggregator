@@ -21,6 +21,11 @@ namespace TestInformationAggregator.Models
 		public DateTime CompletedDate { get; set; }
 
 		/// <summary>
+		/// The UserStory ids linked to the test case
+		/// </summary>
+		public IEnumerable<int> UserStoryIdLinks { get; set; }
+
+		/// <summary>
 		/// The TestSK for joining the Test Case to the Test Result
 		/// </summary>
 		public int TestSK { get; set; }
@@ -64,27 +69,28 @@ namespace TestInformationAggregator.Models
 		public override string ToString()
 		{
 			return $"{this.WorkItemID}," +
-				   $"{this.CompletedDate.ToString()}," +
+				   $"{this.GetLinkedIdsAsCSV(this.UserStoryIdLinks)}," +
+				   $"{this.CompletedDate}," +
 				   $"{this.TestSK}," +
 				   $"{this.TestRunType}," +
 				   $"{this.Outcome}," +
 				   $"\"{this.TestName}\"," +
 				   $"{this.TestOwner}," +
 				   $"{this.Priority}," +
-				   $"{this.GetLinkedBugsAsCSV(WorkItemStates.NEW)}," +
-				   $"{this.GetLinkedBugsAsCSV(WorkItemStates.ACTIVE)}," +
-				   $"{this.GetLinkedBugsAsCSV(WorkItemStates.RESOLVED)}," +
-				   $"{this.GetLinkedBugsAsCSV(WorkItemStates.CLOSED)}";
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.NEW))}," +
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.ACTIVE))}," +
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.RESOLVED))}," +
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.CLOSED))}";
 		}
 
 		/// <summary>
-		/// Gets the linked bugs using the provided state into a comma separated list
+		/// Gets the linked ids into a comma separated list
 		/// </summary>
-		/// <param name="state"> the state to try and get the bug ids from</param>
-		/// <returns> the linked bug ids as a comma separated list </returns>
-		private string GetLinkedBugsAsCSV(string state)
+		/// <param name="linkedIds"> the ids being aggregated </param>
+		/// <returns> the linked ids as a comma separated list </returns>
+		private string GetLinkedIdsAsCSV(IEnumerable<int> linkedIds)
 		{
-			return $"\"{this.GetLinkedBugs(state)?.Select(x => x.ToString()).Aggregate((acc, curr) => acc + ", " + curr)}\"";
+			return $"\"{linkedIds?.Select(x => x.ToString()).Aggregate((acc, curr) => acc + ", " + curr)}\"";
 		}
 
 		/// <summary>

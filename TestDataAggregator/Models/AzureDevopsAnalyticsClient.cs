@@ -58,7 +58,7 @@ namespace TestInformationAggregator.Models
 		{
 			return this.GetWorkItems("$expand=Links($select=SourceWorkItemId,TargetWorkItemId,LinkTypeName)")
 				.Where(x => (string)x["WorkItemType"] == "Test Case")
-				.Where(y => (string)y["State"] != WorkItemStates.CLOSED);
+				.Where(x => (string)x["State"] != WorkItemStates.CLOSED);
 		}
 
 		/// <summary>
