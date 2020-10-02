@@ -16,13 +16,14 @@ namespace TestInformationAggregator.Services
 		/// </summary>
 		/// <param name="testResults"> The test results to join </param>
 		/// <param name="testCases"> the test cases to join </param>
+		/// <param name="delimiter"> the delimiter used by the TestInformation </param>
 		/// <returns> the joined test information </returns>
-		public IEnumerable<TestInformation> JoinTestResultToTestcases(JToken testResults, JToken testCases)
+		public IEnumerable<TestInformation> JoinTestResultToTestcases(JToken testResults, JToken testCases, char delimiter)
 		{
 			return from testResult in testResults
 				   join testCase in testCases
 				   on (string)testResult["TestSK"] equals (string)testCase["TestSK"]
-				   select new TestInformation()
+				   select new TestInformation(delimiter)
 				   {
 					   CompletedDate = Convert.ToDateTime(testResult["CompletedDate"]),
 					   TestSK = Convert.ToInt32(testResult["TestSK"]),

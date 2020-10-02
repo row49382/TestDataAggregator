@@ -11,6 +11,15 @@ namespace TestInformationAggregator.Models
 	public class TestInformation
 	{
 		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="delimiter">The delimiter for the TestInfo ToString </param>
+		public TestInformation(char delimiter)
+		{
+			this.Delimiter = delimiter;
+		}
+
+		/// <summary>
 		/// The WorkItemID of the test case
 		/// </summary>
 		public int WorkItemID { get; set; }
@@ -62,24 +71,29 @@ namespace TestInformationAggregator.Models
 		public Dictionary<string, List<int>> LinkedBugsByState { get; set; }
 
 		/// <summary>
+		/// The delimiter used in the TestInformation ToString 
+		/// </summary>
+		private char Delimiter { get; set; }
+
+		/// <summary>
 		/// To String method to represent properties in appropriately ordered
 		/// comma delimited string for csv generation
 		/// </summary>
 		/// <returns> The object in ordered csv format</returns>
 		public override string ToString()
 		{
-			return $"{this.WorkItemID}," +
-				   $"{this.GetLinkedIdsAsCSV(this.UserStoryIdLinks)}," +
-				   $"{this.CompletedDate}," +
-				   $"{this.TestSK}," +
-				   $"{this.TestRunType}," +
-				   $"{this.Outcome}," +
-				   $"\"{this.TestName}\"," +
-				   $"{this.TestOwner}," +
-				   $"{this.Priority}," +
-				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.NEW))}," +
-				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.ACTIVE))}," +
-				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.RESOLVED))}," +
+			return $"{this.WorkItemID}{this.Delimiter}" +
+				   $"{this.GetLinkedIdsAsCSV(this.UserStoryIdLinks)}{this.Delimiter}" +
+				   $"{this.CompletedDate}{this.Delimiter}" +
+				   $"{this.TestSK}{this.Delimiter}" +
+				   $"{this.TestRunType}{this.Delimiter}" +
+				   $"{this.Outcome}{this.Delimiter}" +
+				   $"\"{this.TestName}\"{this.Delimiter}" +
+				   $"{this.TestOwner}{this.Delimiter}" +
+				   $"{this.Priority}{this.Delimiter}" +
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.NEW))}{this.Delimiter}" +
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.ACTIVE))}{this.Delimiter}" +
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.RESOLVED))}{this.Delimiter}" +
 				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.CLOSED))}";
 		}
 

@@ -30,16 +30,24 @@ namespace TestInformationAggregator.Models
 		protected Dictionary<string, bool> BuilderOptions { get; set; }
 
 		/// <summary>
+		/// Gets or sets the Delimiter: 
+		///	  - ',' for CSV
+		///	  - '|' for all other output report types
+		/// </summary>
+		protected char Delimiter { get; set; }
+
+		/// <summary>
 		/// Creates the TestInformationCSVBuilder
 		/// </summary>
 		/// <param name="headers"> The headers </param>
 		/// <param name="responseUtility"> The azure analytics response utility </param>
-		protected TestInformationBuilderBase(string headers, AzureAnalyticsResponseUtility responseUtility, Dictionary<string, bool> builderOptions)
+		protected TestInformationBuilderBase(string headers, AzureAnalyticsResponseUtility responseUtility, Dictionary<string, bool> builderOptions, char delimiter = ',')
 		{
 			this.TestInformationHeaders = headers;
 			this.TestInformation = new List<TestInformation>();
 			this.ResponseUtility = responseUtility;
 			this.BuilderOptions = builderOptions;
+			this.Delimiter = delimiter;
 		}
 
 		/// <summary>
@@ -60,7 +68,7 @@ namespace TestInformationAggregator.Models
 			{
 				var testCaseWorkItemsWithoutTestResults = closedTestCasesWithLinks
 					.Where(x => !this.TestInformation.Any(y => (string)x["Title"] == y.TestName))
-					.Select(x => new TestInformation()
+					.Select(x => new TestInformation(this.Delimiter)
 					{
 						WorkItemID = Convert.ToInt32(x["WorkItemId"]),
 						TestName = (string)x["Title"],
@@ -90,7 +98,7 @@ namespace TestInformationAggregator.Models
 		{
 			// SK properties on the azure devops apis are similar to primary/foreign keys, as such, we can join
 			// the results based on the TestSK property
-			this.TestInformation.AddRange(this.ResponseUtility.JoinTestResultToTestcases(testResults, testCases));
+			this.TestInformation.AddRange(this.ResponseUtility.JoinTestResultToTestcases(testResults, testCases, this.Delimiter));
 			return this;
 		}
 
