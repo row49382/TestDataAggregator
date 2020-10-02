@@ -16,13 +16,14 @@ namespace TestInformationAggregator.Services
 		/// </summary>
 		/// <param name="testResults"> The test results to join </param>
 		/// <param name="testCases"> the test cases to join </param>
+		/// <param name="delimiter"> the delimiter used by the TestInformation </param>
 		/// <returns> the joined test information </returns>
-		public IEnumerable<TestInformation> JoinTestResultToTestcases(JToken testResults, JToken testCases)
+		public IEnumerable<TestInformation> JoinTestResultToTestcases(JToken testResults, JToken testCases, char delimiter)
 		{
 			return from testResult in testResults
 				   join testCase in testCases
 				   on (string)testResult["TestSK"] equals (string)testCase["TestSK"]
-				   select new TestInformation()
+				   select new TestInformation(delimiter)
 				   {
 					   CompletedDate = Convert.ToDateTime(testResult["CompletedDate"]),
 					   TestSK = Convert.ToInt32(testResult["TestSK"]),
@@ -80,10 +81,13 @@ namespace TestInformationAggregator.Services
 		/// </summary>
 		/// <param name="workItemMatch"> The work item found that is having it's bugs searched for</param>
 		/// <param name="workItems">The list of all work items</param>
+		/// <param name="workItemType"> The workitem type to filter by</param>
+		/// <param name="linkTypes"> The link types to filter the link by. If not provided the comparison is ignored</param>
 		/// <returns> The bug ids attached to the matched work item</returns>
-		public IEnumerable<JToken> GetBugLinksFromMatch(JToken workItemMatch, JArray workItems)
+		public IEnumerable<JToken> GetLinksFromMatch(JToken workItemMatch, JArray workItems, string workItemType, List<string> linkTypes = null)
 		{
-			var bugLinks = new List<JToken>();
+			var links = new List<JToken>();
+			linkTypes ??= new List<string>();
 
 			foreach (var link in workItemMatch["Links"])
 			{
@@ -92,13 +96,15 @@ namespace TestInformationAggregator.Services
 				var targetWorkItem = workItems
 					.FirstOrDefault(x => (string)x["WorkItemId"] == (string)link["TargetWorkItemId"]);
 
-				if (targetWorkItem != null && (string)(targetWorkItem["WorkItemType"]) == "Bug")
+				if (targetWorkItem != null && 
+					(string)targetWorkItem["WorkItemType"] == workItemType &&
+					!linkTypes.Any() ? true : linkTypes.Any(x => x == (string)link["LinkTypeName"]))
 				{
-					bugLinks.Add(targetWorkItem);
+					links.Add(targetWorkItem);
 				}
 			}
 
-			return bugLinks;
+			return links;
 		}
 	}
 }

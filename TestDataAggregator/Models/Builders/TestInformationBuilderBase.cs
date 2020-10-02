@@ -30,16 +30,24 @@ namespace TestInformationAggregator.Models
 		protected Dictionary<string, bool> BuilderOptions { get; set; }
 
 		/// <summary>
+		/// Gets or sets the Delimiter: 
+		///	  - ',' for CSV
+		///	  - '|' for all other output report types
+		/// </summary>
+		protected char Delimiter { get; set; }
+
+		/// <summary>
 		/// Creates the TestInformationCSVBuilder
 		/// </summary>
 		/// <param name="headers"> The headers </param>
 		/// <param name="responseUtility"> The azure analytics response utility </param>
-		protected TestInformationBuilderBase(string headers, AzureAnalyticsResponseUtility responseUtility, Dictionary<string, bool> builderOptions)
+		protected TestInformationBuilderBase(string headers, AzureAnalyticsResponseUtility responseUtility, Dictionary<string, bool> builderOptions, char delimiter = ',')
 		{
 			this.TestInformationHeaders = headers;
 			this.TestInformation = new List<TestInformation>();
 			this.ResponseUtility = responseUtility;
 			this.BuilderOptions = builderOptions;
+			this.Delimiter = delimiter;
 		}
 
 		/// <summary>
@@ -60,14 +68,14 @@ namespace TestInformationAggregator.Models
 			{
 				var testCaseWorkItemsWithoutTestResults = closedTestCasesWithLinks
 					.Where(x => !this.TestInformation.Any(y => (string)x["Title"] == y.TestName))
-					.Select(x => new TestInformation()
+					.Select(x => new TestInformation(this.Delimiter)
 					{
 						WorkItemID = Convert.ToInt32(x["WorkItemId"]),
 						TestName = (string)x["Title"],
 						Priority = Convert.ToInt32(x["Priority"]),
 
 						// we are hard coding the Active outcome to easily filter
-						// all the test cases without test results in the csv
+						// all the test cases without test results in the report
 						Outcome = "Active"
 					});
 
@@ -90,20 +98,7 @@ namespace TestInformationAggregator.Models
 		{
 			// SK properties on the azure devops apis are similar to primary/foreign keys, as such, we can join
 			// the results based on the TestSK property
-			this.TestInformation.AddRange(from testResult in testResults
-										  join testCase in testCases
-										  on (string)testResult["TestSK"] equals (string)testCase["TestSK"]
-										  select new TestInformation()
-										  {
-											  CompletedDate = Convert.ToDateTime(testResult["CompletedDate"]),
-											  TestSK = Convert.ToInt32(testResult["TestSK"]),
-											  TestRunType = (string)testResult["TestRunType"],
-											  Outcome = (string)testResult["Outcome"],
-											  TestName = (string)testCase["TestName"],
-											  TestOwner = (string)testCase["TestOwner"],
-											  Priority = Convert.ToInt32(testCase["Priority"])
-										  });
-
+			this.TestInformation.AddRange(this.ResponseUtility.JoinTestResultToTestcases(testResults, testCases, this.Delimiter));
 			return this;
 		}
 
@@ -123,7 +118,7 @@ namespace TestInformationAggregator.Models
 
 		/// <summary>
 		/// Sets the remaining properties that could not be set from joining the test result and the test cases:
-		/// WorkItemID and BugLinks
+		/// WorkItemID, UserStoryLink and BugLinks
 		/// </summary>
 		/// <param name="closedTestCasesWithLinks"> The closed test case workitems containing their respective links</param>
 		/// <param name="workItemRevisions"> All workItem revision history, needed if the work item name doesn't match the test name</param>
@@ -145,16 +140,21 @@ namespace TestInformationAggregator.Models
 
 				if (workItemMatch != null)
 				{
-					IEnumerable<JToken> bugLinks = this.ResponseUtility.GetBugLinksFromMatch(workItemMatch, workItems);
+					List<string> linkTypesFilter = new List<string> { "Tests" };
+
+					IEnumerable<JToken> bugLinks = this.ResponseUtility.GetLinksFromMatch(workItemMatch, workItems, "Bug", linkTypesFilter);
+					IEnumerable<JToken> userStoryLinks = this.ResponseUtility.GetLinksFromMatch(workItemMatch, workItems, "User Story", linkTypesFilter);
 					Dictionary<string, List<int>> bugLinksByState = this.ResponseUtility.GroupWorkItemsByState(bugLinks);
 
 					int workItemId = Convert.ToInt32(workItemMatch?["WorkItemId"]);
+					IEnumerable<int> userStoryIds = userStoryLinks.Select(x => Convert.ToInt32(x?["WorkItemId"]));
 
 					// The WorkItem will always have the latest test name. Set this as the TestName to ensure
-					// the latest test name is written to the csv
+					// the latest test name is written to the report
 					string workItemTitle = (string)workItemMatch["Title"];
 
 					testInformationInstance.WorkItemID = workItemId;
+					testInformationInstance.UserStoryIdLinks = userStoryIds;
 					testInformationInstance.LinkedBugsByState = bugLinksByState;
 					testInformationInstance.TestName = workItemTitle;
 				}

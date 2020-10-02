@@ -10,7 +10,6 @@ namespace TestInformationAggregator.Models
 	/// </summary>
 	public class TestInformationCSVBuilder : TestInformationBuilderBase
 	{
-
 		/// <summary>
 		/// Creates the TestInformationCSVBuilder
 		/// </summary>

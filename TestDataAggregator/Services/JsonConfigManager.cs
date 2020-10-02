@@ -25,11 +25,6 @@ namespace TestInformationAggregator.Services
 		{
 			this.Configuration = JsonConvert.DeserializeObject<TestInfoAggregatorConfig>(
 				File.ReadAllText(Path.Combine(this.GetAssemblyPath(), configFileName)));
-
-			if (string.IsNullOrEmpty(this.Configuration.OutputDirectory))
-			{
-				this.Configuration.OutputDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-			}
 		}
 
 		/// <summary>

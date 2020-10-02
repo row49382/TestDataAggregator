@@ -11,6 +11,15 @@ namespace TestInformationAggregator.Models
 	public class TestInformation
 	{
 		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="delimiter">The delimiter for the TestInfo ToString </param>
+		public TestInformation(char delimiter)
+		{
+			this.Delimiter = delimiter;
+		}
+
+		/// <summary>
 		/// The WorkItemID of the test case
 		/// </summary>
 		public int WorkItemID { get; set; }
@@ -19,6 +28,11 @@ namespace TestInformationAggregator.Models
 		/// The completed date on the test result
 		/// </summary>
 		public DateTime CompletedDate { get; set; }
+
+		/// <summary>
+		/// The UserStory ids linked to the test case
+		/// </summary>
+		public IEnumerable<int> UserStoryIdLinks { get; set; }
 
 		/// <summary>
 		/// The TestSK for joining the Test Case to the Test Result
@@ -57,34 +71,40 @@ namespace TestInformationAggregator.Models
 		public Dictionary<string, List<int>> LinkedBugsByState { get; set; }
 
 		/// <summary>
+		/// The delimiter used in the TestInformation ToString 
+		/// </summary>
+		private char Delimiter { get; set; }
+
+		/// <summary>
 		/// To String method to represent properties in appropriately ordered
 		/// comma delimited string for csv generation
 		/// </summary>
 		/// <returns> The object in ordered csv format</returns>
 		public override string ToString()
 		{
-			return $"{this.WorkItemID}," +
-				   $"{this.CompletedDate.ToString()}," +
-				   $"{this.TestSK}," +
-				   $"{this.TestRunType}," +
-				   $"{this.Outcome}," +
-				   $"\"{this.TestName}\"," +
-				   $"{this.TestOwner}," +
-				   $"{this.Priority}," +
-				   $"{this.GetLinkedBugsAsCSV(WorkItemStates.NEW)}," +
-				   $"{this.GetLinkedBugsAsCSV(WorkItemStates.ACTIVE)}," +
-				   $"{this.GetLinkedBugsAsCSV(WorkItemStates.RESOLVED)}," +
-				   $"{this.GetLinkedBugsAsCSV(WorkItemStates.CLOSED)}";
+			return $"{this.WorkItemID}{this.Delimiter}" +
+				   $"{this.GetLinkedIdsAsCSV(this.UserStoryIdLinks)}{this.Delimiter}" +
+				   $"{this.CompletedDate}{this.Delimiter}" +
+				   $"{this.TestSK}{this.Delimiter}" +
+				   $"{this.TestRunType}{this.Delimiter}" +
+				   $"{this.Outcome}{this.Delimiter}" +
+				   $"\"{this.TestName}\"{this.Delimiter}" +
+				   $"{this.TestOwner}{this.Delimiter}" +
+				   $"{this.Priority}{this.Delimiter}" +
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.NEW))}{this.Delimiter}" +
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.ACTIVE))}{this.Delimiter}" +
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.RESOLVED))}{this.Delimiter}" +
+				   $"{this.GetLinkedIdsAsCSV(this.GetLinkedBugs(WorkItemStates.CLOSED))}";
 		}
 
 		/// <summary>
-		/// Gets the linked bugs using the provided state into a comma separated list
+		/// Gets the linked ids into a comma separated list
 		/// </summary>
-		/// <param name="state"> the state to try and get the bug ids from</param>
-		/// <returns> the linked bug ids as a comma separated list </returns>
-		private string GetLinkedBugsAsCSV(string state)
+		/// <param name="linkedIds"> the ids being aggregated </param>
+		/// <returns> the linked ids as a comma separated list </returns>
+		private string GetLinkedIdsAsCSV(IEnumerable<int> linkedIds)
 		{
-			return $"\"{this.GetLinkedBugs(state)?.Select(x => x.ToString()).Aggregate((acc, curr) => acc + ", " + curr)}\"";
+			return $"\"{linkedIds?.Select(x => x.ToString()).Aggregate((acc, curr) => acc + ", " + curr)}\"";
 		}
 
 		/// <summary>
