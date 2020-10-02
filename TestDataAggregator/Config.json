@@ -3,6 +3,7 @@
   "project": "",
   "personalAccessToken": "",
   "outputDirectory": "",
+  "fileReportType":  "",
   "builderOptions": {
     "FilterNotApplicableTestResults": true,
     "FilterClosedTestCases": true,

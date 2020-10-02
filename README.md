@@ -21,6 +21,7 @@ The application contains a Config.json file to control project-specific and repo
   "project": "",
   "personalAccessToken": "",
   "outputDirectory": "",
+  "fileReportType":  "",
   "builderOptions": {
     "FilterNotApplicableTestResults": true,
     "FilterClosedTestCases": true,
@@ -43,6 +44,7 @@ Below is the description of each item:
   https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page.
   Make sure you are authorized to Query the Analytics api.
   * The following properties are not required to run the application:
+    * fileReportType: The file type of the report. Currently supports csv and html. Defaults to csv if not provided
     * outputDirectory: The output directory the report will be written to. Defaults to the users Desktop location
     * builderOptions: The builder options that can optionally be ommitted when generating the report. If the fields are absent from the config, the value is defaulted to true
     * odataQueries: The odataQueries which can be applied to the apis used to refine your data documented in the report
@@ -58,4 +60,4 @@ $ dotnet run
 
 Navigate to your desktop location (or outputDirectory location set in Config.json) to find the file. The naming is setup in this format: 
 
-`"{organization}{project}TestReport_{DateTime.Now:yyyy-dd-M--HH-mm-ss}.csv"`.
+`"{organization}{project}TestReport_{DateTime.Now:yyyy-dd-M--HH-mm-ss}.{fileReportType}"`.
