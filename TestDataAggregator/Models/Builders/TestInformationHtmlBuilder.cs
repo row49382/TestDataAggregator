@@ -45,7 +45,7 @@ namespace TestInformationAggregator.Models.Builders
 		/// Builds each table entry
 		/// </summary>
 		/// <param name="tableElementType"> The table element type (either th or td) </param>
-		/// <param name="values"> The values to write into the tabl </param>
+		/// <param name="values"> The values to write into the table </param>
 		/// <returns> The table entry </returns>
 		private string BuildTableEntry(string tableElementType, string[] values)
 		{
