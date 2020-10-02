@@ -25,7 +25,7 @@ namespace TestInformationAggregator.Services
 			TestInformationBuilderBase builder = (fileType.ToLower()) switch
 			{
 				"csv"  => new TestInformationCSVBuilder(headers, responseUtility, builderOptions),
-				"html" => new TestInformationHtmlBuilder(headers, responseUtility, builderOptions),
+				"html" => new TestInformationHtmlBuilder(headers, responseUtility, builderOptions, '|'),
 				_ =>      throw new ArgumentException($"Builder type {fileType} not supported. Only html and csv are currently supported types"),
 			};
 
