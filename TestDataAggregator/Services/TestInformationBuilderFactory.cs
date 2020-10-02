@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TestInformationAggregator.Models;
+using TestInformationAggregator.Models.Builders;
 
 namespace TestInformationAggregator.Services
 {
@@ -21,24 +22,12 @@ namespace TestInformationAggregator.Services
 			AzureAnalyticsResponseUtility responseUtility, 
 			Dictionary<string, bool> builderOptions)
 		{
-			TestInformationBuilderBase builder;
-
-			switch (fileType.ToLower())
+			TestInformationBuilderBase builder = (fileType.ToLower()) switch
 			{
-				case "csv":
-					{
-						builder = new TestInformationCSVBuilder(headers, responseUtility, builderOptions);
-						break;
-					}
-				case "html":
-					{
-						throw new NotImplementedException("html not implemented yet. Check back soon!");
-					}
-				default:
-					{
-						throw new Exception("Builder type not supported. Only html and csv are currently supported types");
-					}
-			}
+				"csv"  => new TestInformationCSVBuilder(headers, responseUtility, builderOptions),
+				"html" => new TestInformationHtmlBuilder(headers, responseUtility, builderOptions),
+				_ =>      throw new ArgumentException($"Builder type {fileType} not supported. Only html and csv are currently supported types"),
+			};
 
 			return builder;
 		}

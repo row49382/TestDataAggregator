@@ -1,6 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.VisualBasic.FileIO;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 using TestInformationAggregator.Services;
 
 namespace TestInformationAggregator.Models
@@ -20,19 +23,20 @@ namespace TestInformationAggregator.Models
 			Dictionary<string, string> oDataQueries,
 			string fileReportType)
 		{
-			string nullTemplate = "Value {0} from TestInfoAgreggatorConfig ctor cannot be null. Set the value in the Config.json file.";
+			static void nullException(string property) => throw new ArgumentException($"Value {property} from TestInfoAgreggatorConfig ctor cannot be null. Set the value in the Config.json file.");
 
-			Requires.NotNull(organization, string.Format(nullTemplate, "organization"));
-			Requires.NotNull(project, string.Format(nullTemplate, "project"));
-			Requires.NotNull(personalAccessToken, string.Format(nullTemplate, "personalAccessToken"));
+			Requires.NotNull(organization, "organization", nullException);
+			Requires.NotNull(project, "project", nullException);
+			Requires.NotNull(personalAccessToken, "personalAccessToken", nullException);
 
 			this.Organization = organization;
 			this.Project = project;
 			this.PersonalAccessToken = personalAccessToken;
-			this.OutputDirectory = outputDirectory;
 			this.BuilderOptions = builderOptions;
 			this.ODataQueries = oDataQueries;
-			this.FileReportType = fileReportType;
+
+			this.OutputDirectory = string.IsNullOrEmpty(outputDirectory) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : outputDirectory;
+			this.FileReportType = string.IsNullOrEmpty(fileReportType) ? "CSV" : fileReportType;
 		}
 
 		/// <summary>
