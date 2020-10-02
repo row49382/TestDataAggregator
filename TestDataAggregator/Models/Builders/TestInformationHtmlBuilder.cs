@@ -6,7 +6,7 @@ using TestInformationAggregator.Services;
 namespace TestInformationAggregator.Models.Builders
 {
 	/// <summary>
-	/// Class to build the csv output using the TestInformation
+	/// Class to build the html output using the TestInformation
 	/// </summary>
 	public class TestInformationHtmlBuilder : TestInformationBuilderBase
 	{
@@ -28,7 +28,7 @@ namespace TestInformationAggregator.Models.Builders
 		{
 			StringBuilder strBuilder = new StringBuilder();
 
-			strBuilder.AppendLine("<html><body><table>");
+			strBuilder.AppendLine("<html><body><table style>");
 			strBuilder.AppendLine(this.BuildTableEntry("th", this.TestInformationHeaders.Split(',')));
 
 			foreach (var testInformationInstance in this.TestInformation)
