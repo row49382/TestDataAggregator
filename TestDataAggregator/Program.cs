@@ -20,7 +20,7 @@ namespace TestInformationAggregator
 			string outputDir = config.Configuration.OutputDirectory;
 
 			string testInformationHeaders =
-				$"WorkItemID,CompletedDate,TestSK,TestRunType,Outcome,TestName,TestOwner,Priority," +
+				$"WorkItemID,Linked UserStoryIds,CompletedDate,TestSK,TestRunType,Outcome,TestName,TestOwner,Priority," +
 				$"Linked Bugs({WorkItemStates.NEW}),Linked Bugs({WorkItemStates.ACTIVE}),Linked Bugs({WorkItemStates.RESOLVED}),Linked Bugs({WorkItemStates.CLOSED})" +
 				$"{Environment.NewLine}";
 
@@ -44,7 +44,7 @@ namespace TestInformationAggregator
 				.Build();
 
 			FileWriter.Write(
-				outputDir,
+				string.IsNullOrEmpty(outputDir) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : outputDir,
 				$"{organization}{project}TestReport_{DateTime.Now:yyyy-dd-M--HH-mm-ss}.csv",
 				testInformationReport);
 		}
