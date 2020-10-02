@@ -26,7 +26,7 @@ namespace TestInformationAggregator.Services
 			{
 				"csv"  => new TestInformationCSVBuilder(headers, responseUtility, builderOptions),
 				"html" => new TestInformationHtmlBuilder(headers, responseUtility, builderOptions, '|'),
-				_ =>      throw new ArgumentException($"Builder type {fileType} not supported. Only html and csv are currently supported types"),
+				_      => throw new ArgumentException($"Builder type {fileType} not supported. Only html and csv are currently supported types"),
 			};
 
 			return builder;
