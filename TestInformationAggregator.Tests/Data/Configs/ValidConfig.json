@@ -1,0 +1,18 @@
+{
+  "organization": "org",
+  "project": "project",
+  "personalAccessToken": "secret",
+  "outputDirectory": "location",
+  "builderOptions": {
+    "FilterNotApplicableTestResults": true,
+    "FilterClosedTestCases": true,
+    "KeepMostRecentTestResults": true,
+    "AddTestCasesWithoutTestResults": true
+  },
+  "odataQueries": {
+    "TestResults": "query1",
+    "WorkItems": "query2",
+    "TestCases": "query3",
+    "WorkItemRevisions": "query4"
+  }
+}
