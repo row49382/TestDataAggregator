@@ -1,0 +1,4 @@
+﻿Row,FileName,MessageThrown
+0,Data/Configs/EmptyConfig_Organization.json,Value organization from TestInfoAgreggatorConfig ctor cannot be null. Set the value in the Config.json file.
+1,Data/Configs/EmptyConfig_Project.json,Value project from TestInfoAgreggatorConfig ctor cannot be null. Set the value in the Config.json file.
+2,Data/Configs/EmptyConfig_PAT.json,Value personalAccessToken from TestInfoAgreggatorConfig ctor cannot be null. Set the value in the Config.json file.

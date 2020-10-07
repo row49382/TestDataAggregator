@@ -13,6 +13,8 @@ namespace TestInformationAggregator.Models
 	/// </summary>
 	public class TestInfoAggregatorConfig
 	{
+		private readonly string nullExceptionMessage = "Value {0} from TestInfoAgreggatorConfig ctor cannot be null. Set the value in the Config.json file.";
+
 		[JsonConstructor]
 		public TestInfoAggregatorConfig(
 			string organization, 
@@ -23,11 +25,9 @@ namespace TestInformationAggregator.Models
 			Dictionary<string, string> oDataQueries,
 			string fileReportType)
 		{
-			static void nullException(string property) => throw new ArgumentException($"Value {property} from TestInfoAgreggatorConfig ctor cannot be null. Set the value in the Config.json file.");
-
-			Requires.NotNull(organization, "organization", nullException);
-			Requires.NotNull(project, "project", nullException);
-			Requires.NotNull(personalAccessToken, "personalAccessToken", nullException);
+			Requires.NotNull(organization, string.Format(this.nullExceptionMessage, "organization"));
+			Requires.NotNull(project, string.Format(this.nullExceptionMessage, "project"));
+			Requires.NotNull(personalAccessToken, string.Format(this.nullExceptionMessage, "personalAccessToken"));
 
 			this.Organization = organization;
 			this.Project = project;

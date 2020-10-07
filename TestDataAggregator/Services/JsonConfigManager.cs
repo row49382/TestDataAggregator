@@ -24,17 +24,7 @@ namespace TestInformationAggregator.Services
 		public JsonConfigManager(string configFileName)
 		{
 			this.Configuration = JsonConvert.DeserializeObject<TestInfoAggregatorConfig>(
-				File.ReadAllText(Path.Combine(this.GetAssemblyPath(), configFileName)));
-		}
-
-		/// <summary>
-		/// Gets the executing assembly path
-		/// </summary>
-		/// <returns> The executing assembly path</returns>
-		private string GetAssemblyPath()
-		{
-			UriBuilder uri = new UriBuilder(Assembly.GetExecutingAssembly().Location);
-			return Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path));
+				File.ReadAllText(Path.Combine(AssemblyPathFinder.GetAssemblyDirectoryPath(), configFileName)));
 		}
 	}
 }

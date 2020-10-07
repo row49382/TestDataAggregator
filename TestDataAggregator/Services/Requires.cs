@@ -11,9 +11,8 @@ namespace TestInformationAggregator.Services
 		/// Checks if the value is null
 		/// </summary>
 		/// <param name="value"> The value to check</param>
-		/// <param name="messageException"> The message to throw if the value is null </param>
-		/// <param name="propertyName"> The name of the property </param>
-		public static void NotNull(object value, string propertyName, Action<string> messageException)
+		/// <param name="message"> The message to throw if the value is null </param>
+		public static void NotNull(object value, string message)
 		{
 			bool isNull;
 
@@ -28,7 +27,7 @@ namespace TestInformationAggregator.Services
 
 			if (isNull)
 			{
-				messageException(propertyName);
+				throw new ArgumentException(message);
 			}
 		}
 	}

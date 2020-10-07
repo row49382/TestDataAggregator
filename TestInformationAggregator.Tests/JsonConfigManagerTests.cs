@@ -1,8 +1,11 @@
 ﻿using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TestInformationAggregator.Models;
+using TestInformationAggregator.Services;
 using TestInformationAggregator.Tests.Factories;
 
 namespace TestInformationAggregator.Tests
@@ -18,11 +21,13 @@ namespace TestInformationAggregator.Tests
             this.AssertAllConfigurationProperties(configManager.Configuration);
         }
 
-        [Test]
-        public void TestLoadEmptyConfig()
+        [Test, TestCaseSource("GetEmptyFileTestingVariables")]
+        public void TestLoadEmptyConfigThrowsArgumentExceptions(string fileLocation, string messageThrown)
         {
-            var configManager = this.jsonConfigManagerFactory.GetEntity("Data/Configs/EmptyConfig.json");
-            this.AssertAllConfigurationPropertiesFromEmpty(configManager.Configuration);
+            var exception = Assert.Throws<ArgumentException>(
+                () => this.jsonConfigManagerFactory.GetEntity(fileLocation));
+
+            Assert.AreEqual(messageThrown, exception.Message);
         }
 
         [Test]
@@ -37,10 +42,24 @@ namespace TestInformationAggregator.Tests
             Assert.Throws<JsonReaderException>(() => this.jsonConfigManagerFactory.GetEntity("Data/Configs/InvalidConfig.json"));
         }
 
+        [Test]
+        public void TestDefaultFileReportType()
+        {
+            var configManager = this.jsonConfigManagerFactory.GetEntity("Data/Configs/DefaultFileReportTypeValueConfig.json");
+            Assert.AreEqual("csv", configManager.Configuration.FileReportType);
+        }
+
+        [Test]
+        public void TestDefaultOutputDirectory()
+        {
+            var configManager = this.jsonConfigManagerFactory.GetEntity("Data/Configs/DefaultOutputDirectoryValueConfig.json");
+            Assert.AreEqual(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), configManager.Configuration.OutputDirectory);
+        }
+
         /// <summary>
         /// Asserts all configuration properties when values are set
         /// </summary>
-        /// <param name="config"> The config to assert on</param>
+        /// <param name="config"> The config to assert on </param>
         private void AssertAllConfigurationProperties(TestInfoAggregatorConfig config)
         {
             Assert.NotNull(config);
@@ -48,7 +67,9 @@ namespace TestInformationAggregator.Tests
             Assert.IsTrue(!string.IsNullOrEmpty(config.Organization));
             Assert.IsTrue(!string.IsNullOrEmpty(config.Project));
             Assert.IsTrue(!string.IsNullOrEmpty(config.PersonalAccessToken));
+
             Assert.IsTrue(!string.IsNullOrEmpty(config.OutputDirectory));
+            Assert.IsTrue(!string.IsNullOrEmpty(config.FileReportType));
 
             Assert.IsTrue(config.BuilderOptions["FilterNotApplicableTestResults"]);
             Assert.IsTrue(config.BuilderOptions["FilterClosedTestCases"]);
@@ -62,28 +83,25 @@ namespace TestInformationAggregator.Tests
         }
 
         /// <summary>
-        /// Asserst all configuration properties when values are not set
+        /// Data provider to get the empty json locations from the csv file
         /// </summary>
-        /// <param name="config"> The config to assert on </param>
-        private void AssertAllConfigurationPropertiesFromEmpty(TestInfoAggregatorConfig config)
+        /// <returns> The empty json config files for testing </returns>
+        private static IEnumerable<object[]> GetEmptyFileTestingVariables()
         {
-            Assert.NotNull(config);
+            IEnumerable<string[]> emptyFileTestingProps = File.ReadAllLines(
+                Path.Combine(AssemblyPathFinder.GetAssemblyDirectoryPath(), "Data/DataDrivenCSV/emptyConfigs.csv"))
+                .Skip(1)
+                .Select(x => x.Split(','));
 
-            Assert.AreEqual(config.Organization, string.Empty);
-            Assert.AreEqual(config.Project, string.Empty);
-            Assert.AreEqual(config.PersonalAccessToken, string.Empty);
-            Assert.AreEqual(config.OutputDirectory, Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-
-            Assert.IsTrue(config.BuilderOptions["FilterNotApplicableTestResults"]);
-            Assert.IsTrue(config.BuilderOptions["FilterClosedTestCases"]);
-            Assert.IsTrue(config.BuilderOptions["KeepMostRecentTestResults"]);
-            Assert.IsTrue(config.BuilderOptions["AddTestCasesWithoutTestResults"]);
-
-            Assert.AreEqual(config.ODataQueries["TestResults"], string.Empty);
-            Assert.AreEqual(config.ODataQueries["WorkItems"], string.Empty);
-            Assert.AreEqual(config.ODataQueries["TestCases"], string.Empty);
-            Assert.AreEqual(config.ODataQueries["WorkItemRevisions"], string.Empty);
+            foreach (var emptyFileTestingProp in emptyFileTestingProps)
+            {
+                yield return 
+                    new object[]
+                    {
+                        emptyFileTestingProp[1],
+                        emptyFileTestingProp[2]
+                    };
+            }
         }
-
     }
 }

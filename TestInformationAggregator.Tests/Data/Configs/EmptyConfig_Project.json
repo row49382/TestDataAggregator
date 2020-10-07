@@ -1,9 +1,9 @@
 {
   "organization": "org",
-  "project": "project",
+  "project": "",
   "personalAccessToken": "secret",
-  "outputDirectory": "location",
-  "fileReportType":  "file",
+  "outputDirectory": "",
+  "fileReportType": "",
   "builderOptions": {
     "FilterNotApplicableTestResults": true,
     "FilterClosedTestCases": true,
@@ -11,9 +11,9 @@
     "AddTestCasesWithoutTestResults": true
   },
   "odataQueries": {
-    "TestResults": "query1",
-    "WorkItems": "query2",
-    "TestCases": "query3",
-    "WorkItemRevisions": "query4"
+    "TestResults": "",
+    "WorkItems": "",
+    "TestCases": "",
+    "WorkItemRevisions": ""
   }
 }

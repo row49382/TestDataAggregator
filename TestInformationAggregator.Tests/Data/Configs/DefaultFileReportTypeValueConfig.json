@@ -1,8 +1,9 @@
-{
-  "organization": "",
-  "project": "",
-  "personalAccessToken": "",
-  "outputDirectory": "",
+﻿{
+  "organization": "org",
+  "project": "project",
+  "personalAccessToken": "secret",
+  "outputDirectory": "location",
+  "fileReportType": "",
   "builderOptions": {
     "FilterNotApplicableTestResults": true,
     "FilterClosedTestCases": true,

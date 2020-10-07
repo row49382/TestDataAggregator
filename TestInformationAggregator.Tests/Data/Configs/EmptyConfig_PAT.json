@@ -1,6 +1,6 @@
 {
-  "organization": "",
-  "project": "",
+  "organization": "org",
+  "project": "project",
   "personalAccessToken": "",
   "outputDirectory": "",
   "fileReportType": "",
@@ -8,11 +8,12 @@
     "FilterNotApplicableTestResults": true,
     "FilterClosedTestCases": true,
     "KeepMostRecentTestResults": true,
-    "AddTestCasesWithoutTestResults": true,
-    "odataQueries": {
-      "TestResults": "",
-      "WorkItems": "",
-      "TestCases": "",
-      "WorkItemRevisions": ""
-    }
+    "AddTestCasesWithoutTestResults": true
+  },
+  "odataQueries": {
+    "TestResults": "",
+    "WorkItems": "",
+    "TestCases": "",
+    "WorkItemRevisions": ""
   }
+}
