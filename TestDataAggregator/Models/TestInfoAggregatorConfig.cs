@@ -17,10 +17,10 @@ namespace TestInformationAggregator.Models
 
 		[JsonConstructor]
 		public TestInfoAggregatorConfig(
-			string organization, 
-			string project, 
+			string organization,
+			string project,
 			string personalAccessToken,
-			string outputDirectory, 
+			string outputDirectory,
 			Dictionary<string, bool> builderOptions,
 			Dictionary<string, string> oDataQueries,
 			string fileReportType)
@@ -28,7 +28,7 @@ namespace TestInformationAggregator.Models
 			Requires.NotNull(organization, string.Format(this.nullExceptionMessage, "organization"));
 			Requires.NotNull(project, string.Format(this.nullExceptionMessage, "project"));
 			Requires.NotNull(personalAccessToken, string.Format(this.nullExceptionMessage, "personalAccessToken"));
-
+			
 			this.Organization = organization;
 			this.Project = project;
 			this.PersonalAccessToken = personalAccessToken;

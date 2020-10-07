@@ -41,6 +41,9 @@
     <None Update="Data\DataDrivenCSV\emptyConfigs.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\DataDrivenCSV\reportFileTypes.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

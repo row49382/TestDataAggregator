@@ -3,13 +3,13 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using TestInformationAggregator.Models;
-using TestInformationAggregator.Services;
 using TestInformationAggregator.Tests.Factories;
+using TestInformationAggregator.Tests.Services;
 
-namespace TestInformationAggregator.Tests
+namespace TestInformationAggregator.Tests.Tests
 {
+    [TestFixture]
     public class JsonConfigManagerTests
     {
         private readonly JsonConfigManagerFactory jsonConfigManagerFactory = new JsonConfigManagerFactory(); 
@@ -88,10 +88,7 @@ namespace TestInformationAggregator.Tests
         /// <returns> The empty json config files for testing </returns>
         private static IEnumerable<object[]> GetEmptyFileTestingVariables()
         {
-            IEnumerable<string[]> emptyFileTestingProps = File.ReadAllLines(
-                Path.Combine(AssemblyPathFinder.GetAssemblyDirectoryPath(), "Data/DataDrivenCSV/emptyConfigs.csv"))
-                .Skip(1)
-                .Select(x => x.Split(','));
+            var emptyFileTestingProps = DataDrivenCSVReader.GetData("emptyConfigs.csv");
 
             foreach (var emptyFileTestingProp in emptyFileTestingProps)
             {
