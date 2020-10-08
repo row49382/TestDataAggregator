@@ -9,9 +9,11 @@ namespace TestInformationAggregator.Tests.Tests
     public class RequiresTests
     {
         [Test]
-        public void TestEmptyStringThrowsArgumentException()
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestEmptyStringThrowsArgumentException(string value)
         {
-            string str = string.Empty;
+            string str = value;
             Assert.Throws<ArgumentException>(() => Requires.NotNull(str));
         }
 

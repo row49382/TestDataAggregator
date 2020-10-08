@@ -44,9 +44,11 @@ namespace TestInformationAggregator.Tests.Tests
         }
 
         [Test]
-        public void TestRequiresFilePathNotNullOrEmpty()
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestRequiresFilePathNotNullOrEmpty(string filePathValue)
         {
-            string filePath = string.Empty;
+            string filePath = filePathValue;
             string fileName = "sample.txt";
 
             Assert.Throws<ArgumentException>(
@@ -54,9 +56,11 @@ namespace TestInformationAggregator.Tests.Tests
         }
 
         [Test]
-        public void TestRequiresFileNameNotNullOrEmpty()
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestRequiresFileNameNotNullOrEmpty(string fileNameValue)
         {
-            string fileName = string.Empty;
+            string fileName = fileNameValue;
 
             Assert.Throws<ArgumentException>(
                 () => FileWriter.Write(this.outputDirectory, fileName, string.Empty));
